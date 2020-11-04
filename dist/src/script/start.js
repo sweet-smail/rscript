@@ -21,43 +21,45 @@ const webpack_hot_middleware_1 = __importDefault(require("webpack-hot-middleware
 const webpack_dev_middleware_1 = __importDefault(require("webpack-dev-middleware"));
 process.env.NODE_ENV = 'development';
 const webpack_config_1 = __importDefault(require("../config/webpack.config"));
-const parse_config_1 = require("../config/parse.config");
+const webpack_dev_config_1 = __importDefault(require("../config/webpack.dev.config"));
 exports.default = () => {
-    var _a;
+    const publicPath = webpack_config_1.default.output.publicPath;
     let compiler;
-    const devserver = parse_config_1.getDevServer();
     try {
         compiler = webpack_1.default(webpack_config_1.default);
     }
     catch (error) {
-        console.error('webpack编译错误:', error);
+        console.error(error);
         process.exit(1);
     }
     const app = express_1.default();
-    console.log('module', module.hot);
     app
         .use(webpack_dev_middleware_1.default(compiler, {
-        // logLevel: 'error',
-        publicPath: (_a = webpack_config_1.default.output) === null || _a === void 0 ? void 0 : _a.publicPath,
+        logLevel: 'error',
+        lazy: false,
+        watchOptions: {
+            ignored: /node_modules/,
+            poll: false,
+        },
+        publicPath: publicPath,
     }))
         .use(webpack_hot_middleware_1.default(compiler, {
         log: console.log,
         path: '/__webpack_hmr',
-        heartbeat: 2000,
+        heartbeat: 10 * 1000,
     }));
-    //转发api
-    if (!!devserver.proxy && Object.keys(devserver.proxy).length > 0) {
-        const arrayProxy = Object.entries(devserver.proxy);
+    //proxy
+    if (!!webpack_dev_config_1.default.proxy) {
+        const arrayProxy = Object.entries(webpack_dev_config_1.default.proxy);
         arrayProxy.forEach(([proxyPath, proxyOptions]) => {
             app.use([proxyPath], http_proxy_middleware_1.createProxyMiddleware(proxyOptions));
         });
     }
+    //设置static
     app.get('*', (req, res, next) => {
-        var _a;
-        const filename = path_1.default.join((_a = webpack_config_1.default.output) === null || _a === void 0 ? void 0 : _a.path, 'index.html');
+        const filename = path_1.default.join(webpack_config_1.default.output.path, 'index.html');
         compiler.outputFileSystem.readFile(filename, (err, result) => {
             if (err) {
-                console.error(err.message);
                 return next(err);
             }
             res.set('content-type', 'text/html');
@@ -66,7 +68,7 @@ exports.default = () => {
         });
     });
     //监听端口，并打开浏览器
-    app.listen(devserver.port, () => __awaiter(void 0, void 0, void 0, function* () {
-        yield open_1.default(`http://127.0.0.1:${devserver.port}`);
+    app.listen(webpack_dev_config_1.default.port, () => __awaiter(void 0, void 0, void 0, function* () {
+        yield open_1.default(`http://127.0.0.1:${webpack_dev_config_1.default.port}`);
     }));
 };

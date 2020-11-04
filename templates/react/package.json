@@ -1,0 +1,45 @@
+{
+    "name": "<%=name %>",
+    "description": "<%=description %>",
+    "scripts": {
+        "start": "rscript start",
+        "build": "rscript build",
+        "test": "rscript test"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "eslint --fix",
+            "git add"
+        ],
+        "packages/**/*.{ts,d.ts}": [
+            "npm run build:docs-api",
+            "git adddocs"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "lint-staged"
+        }
+    },
+    "keywords": [],
+    "author": "",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/node": "^14.14.6",
+        "@types/webpack-env": "^1.15.3"
+    },
+    "browserslist": {
+        "production": [
+            "defaults"
+        ],
+        "development": [
+            "last 1 version"
+        ]
+    }
+}

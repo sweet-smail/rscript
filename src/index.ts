@@ -1,66 +1,45 @@
-import minimist from 'minimist';
-import spawn from 'cross-spawn';
-import path from 'path';
-import Project from './create/project';
-export default class Cli {
-  public appPath: string;
-  constructor() {
-    this.appPath = process.cwd();
-  }
-  run() {
-    this.parseArgs();
-  }
-  parseArgs() {
-    const args = minimist(process.argv.slice(2), {
-      alias: {
-        version: ['v'],
-        help: ['h'],
-      },
-      boolean: ['version', 'help'],
-    });
-    const command = args._[0];
-    if (command) {
-      switch (command) {
-        //执行创建项目命令
-        case 'create':
-          //如果create 命令后没有跟数据 则args[1]为undefind
-          const newProject = new Project({
-            projectName: args._[1],
-          });
-          newProject.init();
-          newProject.create();
-          break;
-        //执行构建命令
-        case 'build':
-          const buildResult = spawn.sync(
-            'node',
-            [path.join(__dirname, './script/build.js')],
-            {
-              stdio: 'inherit',
-            }
-          );
-          process.exit(buildResult.status || undefined);
+import { program } from 'commander';
+import chalk from 'chalk';
 
-        case 'start':
-          const result = spawn.sync(
-            'node',
-            [path.join(__dirname, './script/start.js')],
-            {
-              stdio: 'inherit',
-            }
-          );
-          if (result.signal) {
-            if (result.signal === 'SIGKILL') {
-              console.log(result.signal, 1);
-            } else if (result.signal === 'SIGTERM') {
-              console.log(result, 2);
-            }
-          }
-          process.exit(result.status || undefined);
-
-        default:
-          console.log('Unknown script "' + command + '".');
-      }
-    }
-  }
-}
+const yeoman = require('yeoman-environment');
+import GeneratorCreate from './script/create';
+import appRun from './script/start';
+import buildApp from './script/build';
+const env = yeoman.createEnv();
+env.registerStub(GeneratorCreate, 'rscript');
+export default () => {
+	program
+		.version('0.0.1', '-v,--version', '查看当前版本')
+		.description('richard 的脚手架');
+	program
+		.command('create')
+		.description('使用rscript创建项目')
+		.action(function() {
+			console.log(chalk.blue('rscript 即将创建项目,请完成如下操作!!!'));
+			env.run('rscript', function(error: Error) {
+				if (error) {
+					console.error(chalk.red(error.message));
+					process.exit(1);
+				}
+			});
+		});
+	program
+		.command('start')
+		.description('使用rscript运行开发环境项目')
+		.action(function() {
+			appRun();
+		});
+	program
+		.command('build')
+		.description('使用rscript构建生产环境项目')
+		.action(function() {
+			buildApp();
+		});
+	program
+		.command('update')
+		.description('升级rscript')
+		.action(function() {
+			console.log('update');
+		});
+	program.parse(process.argv);
+};

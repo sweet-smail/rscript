@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var path_1 = __importDefault(require("path"));
+const path_1 = __importDefault(require("path"));
 exports.default = {
     entery: path_1.default.resolve(__dirname, '../src/index.tsx'),
     //配置别名，对引用路径进行映射。

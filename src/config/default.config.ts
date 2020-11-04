@@ -1,14 +1,6 @@
-## Getting Start
+import path from 'path';
 
-### install
-
-yarn ininstall rscript
-
-## Config
-
-```
-
-{
+export default {
 	/**
 	 * @description 静态资源存放路径
 	 * @type string
@@ -118,5 +110,3 @@ yarn ininstall rscript
 	//配置图片文件是否走base64的编译的阈值
 	inlineLimit: 10000, //10k
 };
-
-```

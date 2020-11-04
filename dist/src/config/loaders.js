@@ -3,9 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const path_1 = __importDefault(require("path"));
 const mini_css_extract_plugin_1 = __importDefault(require("mini-css-extract-plugin"));
-const parse_config_1 = require("./parse.config");
+const resolve_config_1 = __importDefault(require("./resolve.config"));
 const isDev = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 const cssRegex = /\.css$/;
@@ -14,6 +13,7 @@ const lessRegex = /\.less$/;
 const lessModuleRegex = /\.module\.less$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const { css: { loaderOptions }, outputDir, assetsDir, } = resolve_config_1.default;
 /**
  *
  * @param cssOptions
@@ -22,10 +22,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
  */
 const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
-        isDev && {
-            loader: 'style-loader',
-            options: Object.assign({}, parse_config_1.getStyleLoaderOptions()),
-        },
+        isDev && 'style-loader',
         isProduction && mini_css_extract_plugin_1.default.loader,
         {
             loader: 'css-loader',
@@ -33,7 +30,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
         },
         {
             loader: 'postcss-loader',
-            options: parse_config_1.getPostLoaderOptions(),
+            options: loaderOptions.postcss,
         },
     ].filter(Boolean);
     if (preProcessor) {
@@ -41,14 +38,17 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     }
     return loaders;
 };
-const rules = [
+const loaders = [
     {
         test: /\.(ts|js)x?$/,
-        exclude: /node_modules/,
         use: [
             {
-                loader: path_1.default.resolve(__dirname, '../../node_modules/babel-loader'),
-                options: Object.assign({ cacheDirectory: isDev ? true : false, cacheCompression: true, compact: !isDev }, parse_config_1.getBableOptions()),
+                loader: 'babel-loader',
+                options: {
+                    cacheDirectory: isDev ? true : false,
+                    cacheCompression: false,
+                    compact: !isDev,
+                },
             },
         ],
     },
@@ -56,7 +56,16 @@ const rules = [
     {
         test: cssRegex,
         exclude: cssModuleRegex,
-        use: getStyleLoaders(Object.assign({ importLoaders: 1 }, parse_config_1.getCssloaderOptions())),
+        use: getStyleLoaders({
+            importLoaders: 1,
+        }),
+    },
+    //css module 编译
+    {
+        test: cssModuleRegex,
+        use: getStyleLoaders(Object.assign(Object.assign({}, loaderOptions.css), { modules: {
+                auto: true,
+            }, importLoaders: 1 })),
     },
     //less 编译
     {
@@ -64,7 +73,18 @@ const rules = [
         exclude: lessModuleRegex,
         use: getStyleLoaders({}, {
             loader: 'less-loader',
-            options: parse_config_1.getLessLoaderOptions(),
+            options: loaderOptions.less,
+        }),
+    },
+    //less module 编译
+    {
+        test: lessModuleRegex,
+        use: getStyleLoaders({
+            importLoaders: 3,
+            modules: true,
+        }, {
+            loader: 'less-loader',
+            options: loaderOptions.less,
         }),
     },
     //sass 编译
@@ -75,7 +95,18 @@ const rules = [
             importLoaders: 3,
         }, {
             loader: 'sass-loader',
-            options: parse_config_1.getSassLoaderOptions(),
+            options: loaderOptions.scss,
+        }),
+    },
+    //sass module 编译
+    {
+        test: sassModuleRegex,
+        use: getStyleLoaders({
+            importLoaders: 3,
+            modules: true,
+        }, {
+            loader: 'sass-loader',
+            options: loaderOptions.scss,
         }),
     },
     {
@@ -84,8 +115,8 @@ const rules = [
             {
                 loader: 'url-loader',
                 options: {
-                    limit: parse_config_1.configs.inlineLimit,
-                    name: `${parse_config_1.configs.assetsDir}/media/imgs/[name].[hash:8].[ext]`,
+                    limit: 1000,
+                    name: `${assetsDir}/media/imgs/[name].[hash:8].[ext]`,
                 },
             },
         ],
@@ -96,10 +127,10 @@ const rules = [
             {
                 loader: 'url-loader',
                 options: {
-                    name: `${parse_config_1.configs.assetsDir}/media/fonts/[name].[hash:8].[ext]`,
+                    name: `${assetsDir}/media/fonts/[name].[hash:8].[ext]`,
                 },
             },
         ],
     },
 ];
-exports.default = rules;
+exports.default = loaders;

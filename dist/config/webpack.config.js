@@ -3,55 +3,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var path_1 = __importDefault(require("path"));
-var resolve_config_1 = __importDefault(require("../config/resolve.config"));
-var plugins_1 = __importDefault(require("./plugins"));
-var loaders_1 = __importDefault(require("./loaders"));
-var assetsDir = resolve_config_1.default.assetsDir, publicPath = resolve_config_1.default.publicPath, outputDir = resolve_config_1.default.outputDir, configureWebpack = resolve_config_1.default.configureWebpack, entry = resolve_config_1.default.entry;
-var isProduction = process.env.NODE_ENV === 'production';
-var root = process.cwd();
-/**
- * @deprecated 合并entry
- * @param entrys
- */
-function getEntrys(entrys) {
-    var newEntrys = {};
-    for (var k in entrys) {
-        newEntrys[k] = [
-            !isProduction && 'webpack-hot-middleware/client?reload=true',
-            entrys[k],
-        ].filter(Boolean);
-    }
-    return newEntrys;
-}
-var webpackConfig = {
-    entry: getEntrys(entry),
-    output: {
-        publicPath: publicPath,
-        filename: assetsDir + "/js/bundle.js",
-        chunkFilename: isProduction
-            ? assetsDir + "/js/[hash].chunk.js"
-            : assetsDir + "/js/[name].chunk.js",
-        path: path_1.default.resolve(root, outputDir),
-    },
+const parse_config_1 = require("./parse.config");
+const plugins_1 = __importDefault(require("./plugins"));
+const loaders_1 = __importDefault(require("./loaders"));
+const isDevelopment = process.env.NODE_ENV === 'development';
+const webpackConfig = {
+    entry: parse_config_1.getEntrys(),
+    output: parse_config_1.getOutput(),
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
-    optimization: {
-        runtimeChunk: {
-            name: 'runtime',
-        },
-        //告知 webpack 使用可读取模块标识符,默认会在 mode development 启用，在 mode production 禁用。
-        namedModules: !isProduction,
-        //告知 webpack 使用可读取 chunk 标识符,默认会在 mode development 启用，在 mode production 禁用。
-        namedChunks: !isProduction,
-    },
-    mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? false : 'cheap-module-eval-source-map',
+    externals: parse_config_1.configs.externals,
+    // optimization: {
+    // 	minimize: false, // 是否压缩
+    // 	runtimeChunk: {
+    // 		name: (entrypoint: any) => `runtime-${entrypoint.name}`,
+    // 	},
+    // 	noEmitOnErrors: true,
+    // 	removeEmptyChunks: true, // 删除空的模块
+    // 	mergeDuplicateChunks: true, //合并相同得模块
+    // 	splitChunks: {
+    // 		chunks: 'all',
+    // 		minChunks: 1, //共享模块得最小块数
+    // 		maxInitialRequests: 30, // 入口点得最大并行请求
+    // 		maxAsyncRequests: 30, //按需加载得时候最大并行请求
+    // 		cacheGroups: {
+    // 			commons: {
+    // 				test: /[\\/]node_modules[\\/]/,
+    // 				name: 'vendors',
+    // 				chunks: 'all',
+    // 			},
+    // 		},
+    // 	},
+    // },
+    mode: isDevelopment ? 'development' : 'production',
+    devtool: parse_config_1.getDevtool(),
     plugins: plugins_1.default,
     module: {
         rules: loaders_1.default,
     },
 };
-console.log('webpackConfig', webpackConfig);
 exports.default = webpackConfig;

@@ -1,59 +1,42 @@
-import path from 'path';
-import webpackMerge from 'webpack-merge';
-import rConfig from '../config/resolve.config';
-import plugins from './plugins';
-import loaders from './loaders';
 import webpack from 'webpack';
-
-const { assetsDir, publicPath, outputDir, configureWebpack, entry } = rConfig;
-const isProduction = process.env.NODE_ENV === 'production';
-const root = process.cwd();
-interface Ientery {
-  [propIndex: string]: string;
-}
-/**
- * @deprecated 合并entry
- * @param entrys
- */
-function getEntrys(entrys: Ientery) {
-  const newEntrys: any = {};
-  for (let k in entrys) {
-    newEntrys[k] = [
-      !isProduction && 'webpack-hot-middleware/client?reload=true',
-      entrys[k],
-    ].filter(Boolean);
-  }
-  return newEntrys;
-}
-
-const webpackConfig = {
-  entry: getEntrys(entry),
-  output: {
-    publicPath: publicPath,
-    filename: `${assetsDir}/js/bundle.js`,
-    chunkFilename: isProduction
-      ? `${assetsDir}/js/[hash].chunk.js`
-      : `${assetsDir}/js/[name].chunk.js`,
-    path: path.resolve(root, outputDir),
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json'],
-  },
-  optimization: {
-    runtimeChunk: {
-      name: 'runtime',
-    },
-    //告知 webpack 使用可读取模块标识符,默认会在 mode development 启用，在 mode production 禁用。
-    namedModules: !isProduction,
-    //告知 webpack 使用可读取 chunk 标识符,默认会在 mode development 启用，在 mode production 禁用。
-    namedChunks: !isProduction,
-  },
-  mode: isProduction ? 'production' : 'development',
-  devtool: isProduction ? false : 'cheap-module-eval-source-map',
-  plugins: plugins,
-  module: {
-    rules: loaders,
-  },
+import { getEntrys, getOutput, getDevtool, configs } from './parse.config';
+import plugins from './plugins';
+import moduleRules from './loaders';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const webpackConfig: webpack.Configuration = {
+	entry: getEntrys(),
+	output: getOutput(),
+	resolve: {
+		extensions: ['.ts', '.tsx', '.js', '.json'],
+	},
+	externals: configs.externals,
+	// optimization: {
+	// 	minimize: false, // 是否压缩
+	// 	runtimeChunk: {
+	// 		name: (entrypoint: any) => `runtime-${entrypoint.name}`,
+	// 	},
+	// 	noEmitOnErrors: true,
+	// 	removeEmptyChunks: true, // 删除空的模块
+	// 	mergeDuplicateChunks: true, //合并相同得模块
+	// 	splitChunks: {
+	// 		chunks: 'all',
+	// 		minChunks: 1, //共享模块得最小块数
+	// 		maxInitialRequests: 30, // 入口点得最大并行请求
+	// 		maxAsyncRequests: 30, //按需加载得时候最大并行请求
+	// 		cacheGroups: {
+	// 			commons: {
+	// 				test: /[\\/]node_modules[\\/]/,
+	// 				name: 'vendors',
+	// 				chunks: 'all',
+	// 			},
+	// 		},
+	// 	},
+	// },
+	mode: isDevelopment ? 'development' : 'production',
+	devtool: getDevtool(),
+	plugins: plugins,
+	module: {
+		rules: moduleRules,
+	},
 };
-console.log('webpackConfig', webpackConfig);
 export default webpackConfig;

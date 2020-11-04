@@ -1,14 +1,6 @@
-## Getting Start
+const path = require('path');
 
-### install
-
-yarn ininstall rscript
-
-## Config
-
-```
-
-{
+module.exports = {
 	/**
 	 * @description 静态资源存放路径
 	 * @type string
@@ -29,9 +21,9 @@ yarn ininstall rscript
 	/**
 	 * @description 打包入口(如果同时配置了pages,则将忽略entry)
 	 * @type string
-	 * @default path.resolve(__dirname, 'src/index.tsx')
+	 * @default path.resolve(__dirname, '../src/index.tsx')
 	 */
-	entry: path.resolve(__dirname, 'src/index.tsx'),
+	entry: path.resolve(__dirname, '../src/index.tsx'),
 	/**
 	 * @description 多页面配置
 	 * @type object|undefind
@@ -47,7 +39,7 @@ yarn ininstall rscript
 		//   // 在 dist/index.html 的输出
 		//   filename: 'index.html',
 		//   // 当使用 title 选项时，
-		//   // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
+		//   // template 中的 title 标签需要是
 		//   title: 'Index Page',
 		//   // 在这个页面中包含的块，默认情况下会包含
 		//   chunks: ['index'],
@@ -67,7 +59,6 @@ yarn ininstall rscript
 	analyze: {},
 	/**
 	 * @description 设置autoprefixer 配置项
-	 * @description {}
 	 */
 	autoprefixer: {},
 	/**
@@ -82,17 +73,9 @@ yarn ininstall rscript
 	sassLoader: {},
 	/**
 	 * @description postloader 相关配置项
-	 * @description 默认配置了postcss-preset-env, 和autoprefixer 插件
-	 * @description {}
+	 *
 	 */
-	postCssLoader: {
-		// execute: undefined,
-		// 如果设置了这个值，将直接覆盖默认的配置，建议通过
-		// postcssOptions: {
-		// 	plugins: [],
-		// },
-		// sourceMap: false,
-	},
+	postcssLoader: {},
 	/**
 	 * @description 配置额外的postcss插件
 	 * @default []
@@ -100,6 +83,7 @@ yarn ininstall rscript
 	extraPostCSSPlugins: [],
 	//设置要复制到输出目录的文件或文件夹。
 	copy: [],
+
 	devtool: '',
 	//设置哪些模块可以不被打包
 	externals: {},
@@ -118,5 +102,3 @@ yarn ininstall rscript
 	//配置图片文件是否走base64的编译的阈值
 	inlineLimit: 10000, //10k
 };
-
-```
