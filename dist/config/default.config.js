@@ -6,16 +6,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 exports.default = {
     /**
-     * @description 静态资源存放路径
+     * @description 打包目录
+     * @type string
+     * @default "dist"
+     */
+    outPutDir: 'dist',
+    /**
+     * @description webpack outputpublicPath
+     * @type string
+     * @default "/"
+     */
+    publicPath: '/',
+    /**
+     * @description 静态资源存放位置
      * @type string
      * @default "assest"
      */
-    outPutDir: 'dist',
-    publicPath: '/',
     assetsDir: 'assest',
     /**
-     * @description 配置开发服务器
-     *
+     * @description 配置开发服务器,配置的将与默认配置进行合并
+     * @default {
+     * 		port: 8080, // 默认运行端口
+            host: '127.0.0.1',
+            proxy: {}, //转发方式
+        }
      */
     devServer: {
         port: 8080,
@@ -25,30 +39,30 @@ exports.default = {
     /**
      * @description 打包入口(如果同时配置了pages,则将忽略entry)
      * @type string
-     * @default path.resolve(__dirname, 'src/index.tsx')
+     * @default src/index.tsx
      */
-    entry: path_1.default.resolve(__dirname, 'src/index.tsx'),
+    entry: path_1.default.resolve(process.cwd(), 'src/index.tsx'),
     /**
-     * @description 多页面配置
-     * @type object|undefind
+     * @description 多页面配置,自定义配置将和默认配置进行合并
+     * @type object
      * @default {}
-     *
+     * @example
+     * {
+            index:{
+                // 页面入口
+                entry: path.resolve(process.cwd(), 'src/index.tsx'),
+                // 页面模板文件，如果没有配置则默认指向public index.html
+                template: path.resolve(process.cwd(), 'config/index.html'),
+                // 文件名，默认取key
+                filename: 'index.html',
+                // 页面标题 默认取 key
+                title: 'Index Page',
+                //包含的模块文件 默认是key
+                chunks: ['index'],
+            }
+     * }
      */
-    pages: {
-    // index: {
-    //   // page 的入口
-    //   entry: path.resolve(process.cwd(), 'src/index.tsx'),
-    //   // 模板来源
-    //   template: path.resolve(process.cwd(), 'config/index.html'),
-    //   // 在 dist/index.html 的输出
-    //   filename: 'index.html',
-    //   // 当使用 title 选项时，
-    //   // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-    //   title: 'Index Page',
-    //   // 在这个页面中包含的块，默认情况下会包含
-    //   chunks: ['index'],
-    // },
-    },
+    pages: {},
     /**
      * @description 配置别名，对引用路径进行映射
      */
@@ -96,7 +110,12 @@ exports.default = {
     extraPostCSSPlugins: [],
     //设置要复制到输出目录的文件或文件夹。
     copy: [],
-    devtool: '',
+    /**
+     * @type Configuration.devtool
+     */
+    devtool: process.env.NODE_ENV === 'deveopment'
+        ? 'eval-cheap-module-source-map'
+        : false,
     //设置哪些模块可以不被打包
     externals: {},
     //配置额外的babel打包插件

@@ -52,8 +52,8 @@ export default class extends Generator {
 					'@types/react': '^16.9.0',
 					'@types/react-dom': '^16.9.0',
 					'@types/react-router-dom': '^5.1.5',
-					react: '^16.13.1',
-					'react-dom': '^16.13.1',
+					react: '^17.0.1',
+					'react-dom': '^17.0.1',
 					'react-router-dom': '^5.2.0',
 				};
 				break;

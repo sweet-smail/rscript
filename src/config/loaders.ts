@@ -1,5 +1,4 @@
 import webpack from 'webpack';
-import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import {
 	configs,
@@ -33,18 +32,18 @@ const getStyleLoaders: (
 ) => webpack.RuleSetRule[] = (cssOptions, preProcessor) => {
 	const loaders: any = [
 		isDev && {
-			loader: 'style-loader',
+			loader: require.resolve('style-loader'),
 			options: {
 				...getStyleLoaderOptions(),
 			},
 		},
 		isProduction && MiniCssExtractPlugin.loader,
 		{
-			loader: 'css-loader',
+			loader: require.resolve('css-loader'),
 			options: cssOptions,
 		},
 		{
-			loader: 'postcss-loader',
+			loader: require.resolve('postcss-loader'),
 			options: getPostLoaderOptions(),
 		},
 	].filter(Boolean);
@@ -59,7 +58,7 @@ const rules: webpack.ModuleOptions['rules'] = [
 		exclude: /node_modules/,
 		use: [
 			{
-				loader: path.resolve(__dirname, '../../node_modules/babel-loader'),
+				loader: require.resolve('babel-loader'),
 				options: {
 					cacheDirectory: isDev ? true : false,
 					cacheCompression: true,
@@ -108,7 +107,7 @@ const rules: webpack.ModuleOptions['rules'] = [
 		test: /\.(png|jpg|gif|ico)$/i,
 		use: [
 			{
-				loader: 'url-loader',
+				loader: require.resolve('url-loader'),
 				options: {
 					limit: configs.inlineLimit,
 					name: `${configs.assetsDir}/media/imgs/[name].[hash:8].[ext]`,
@@ -120,7 +119,7 @@ const rules: webpack.ModuleOptions['rules'] = [
 		test: /\.(woff|woff2|eot|ttf|otf|obj|gltf)$/,
 		use: [
 			{
-				loader: 'url-loader',
+				loader: require.resolve('url-loader'),
 				options: {
 					name: `${configs.assetsDir}/media/fonts/[name].[hash:8].[ext]`,
 				},

@@ -1,3 +1,5 @@
+console.log('config', process.env.NODE_ENV);
+
 import webpack from 'webpack';
 import { getEntrys, getOutput, getDevtool, configs } from './parse.config';
 import plugins from './plugins';
@@ -7,9 +9,24 @@ const webpackConfig: webpack.Configuration = {
 	entry: getEntrys(),
 	output: getOutput(),
 	resolve: {
+		alias: configs.alias,
 		extensions: ['.ts', '.tsx', '.js', '.json'],
 	},
+
 	externals: configs.externals,
+	optimization: {
+		moduleIds: 'deterministic',
+		runtimeChunk: true,
+		splitChunks: {
+			cacheGroups: {
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					chunks: 'all',
+				},
+			},
+		},
+	},
 	// optimization: {
 	// 	minimize: false, // 是否压缩
 	// 	runtimeChunk: {

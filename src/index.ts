@@ -3,8 +3,7 @@ import chalk from 'chalk';
 
 const yeoman = require('yeoman-environment');
 import GeneratorCreate from './script/create';
-import appRun from './script/start';
-import buildApp from './script/build';
+
 const env = yeoman.createEnv();
 env.registerStub(GeneratorCreate, 'rscript');
 export default () => {
@@ -27,13 +26,13 @@ export default () => {
 		.command('start')
 		.description('使用rscript运行开发环境项目')
 		.action(function() {
-			appRun();
+			require('./script/start');
 		});
 	program
 		.command('build')
 		.description('使用rscript构建生产环境项目')
 		.action(function() {
-			buildApp();
+			require('./script/build');
 		});
 	program
 		.command('update')

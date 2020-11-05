@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBableOptions = exports.getSassLoaderOptions = exports.getLessLoaderOptions = exports.getStyleLoaderOptions = exports.getPostLoaderOptions = exports.getCssloaderOptions = exports.getDevServer = exports.getDevtool = exports.getOutput = exports.getEntrys = exports.configs = void 0;
+console.log('parse', process.env.NODE_ENV);
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const default_config_1 = __importDefault(require("./default.config"));
@@ -15,21 +16,28 @@ const getConfigs = () => {
     if (!fs_1.default.existsSync(userConfigPath)) {
         return default_config_1.default;
     }
+    // console.log('合并对象', lodash.merge(defaultConfig, require(userConfigPath)));
     return require(userConfigPath);
 };
 exports.configs = getConfigs();
 /**
  * @description 处理webpack 入口
+ * @returns webpack.Entry
  */
 exports.getEntrys = () => {
+    const webpackHotMidlleClient = path_1.default.resolve(__dirname, '../../node_modules/webpack-hot-middleware/client.js') + '?path=/__webpack_hmr&timeout=20000&quiet=true&overlayWarnings=true';
+    // 如果是多页面配置
     if (!!exports.configs.pages && Object.keys(exports.configs.pages).length > 0) {
-        return exports.configs.pages;
+        const entryObject = {};
+        for (let pageKey in exports.configs.pages) {
+            entryObject[pageKey] = [
+                !isProduction && exports.configs.pages[pageKey].entry,
+                webpackHotMidlleClient,
+            ].filter(Boolean);
+        }
+        return entryObject;
     }
-    const newEntry = exports.configs.entry || path_1.default.resolve(process.cwd(), 'src/index.tsx');
-    return [
-        path_1.default.resolve(__dirname, '../../node_modules/webpack-hot-middleware/client.js') + '?path=/__webpack_hmr&timeout=20000',
-        newEntry,
-    ];
+    return [exports.configs.entry, !isProduction && webpackHotMidlleClient].filter(Boolean);
 };
 /**
  * @description 处理出口
@@ -37,21 +45,23 @@ exports.getEntrys = () => {
 exports.getOutput = () => {
     if (!exports.configs.hash) {
         return {
+            pathinfo: false,
             publicPath: exports.configs.publicPath,
-            filename: `${exports.configs.assetsDir}/js/bundle.js`,
+            filename: `${exports.configs.assetsDir}/js/[name].js`,
             chunkFilename: `${exports.configs.assetsDir}/js/[name].chunk.js`,
-            path: path_1.default.resolve(rootSource, exports.configs.outPutDir || 'dist'),
+            path: path_1.default.resolve(rootSource, exports.configs.outPutDir),
         };
     }
     return {
         publicPath: exports.configs.publicPath,
+        pathinfo: false,
         filename: isProduction
             ? `${exports.configs.assetsDir}/js/[name].[chunkhash:8].js`
-            : `${exports.configs.assetsDir}/js/bundle.js`,
+            : `${exports.configs.assetsDir}/js/[name].js`,
         chunkFilename: isProduction
             ? `${exports.configs.assetsDir}/js/[name].[chunkhash:8].chunk.js`
             : `${exports.configs.assetsDir}/js/[name].chunk.js`,
-        path: path_1.default.resolve(rootSource, exports.configs.outPutDir || 'dist'),
+        path: path_1.default.resolve(rootSource, exports.configs.outPutDir),
     };
 };
 exports.getDevtool = () => {
@@ -92,11 +102,12 @@ exports.getCssloaderOptions = () => {
 /**
  * @description post-loader 相关配置项
  */
+console.log('autoprefixer', exports.configs.autoprefixer);
 exports.getPostLoaderOptions = () => {
     return Object.assign({ postcssOptions: {
             plugins: [
-                ['postcss-preset-env', {}],
-                ['autoprefixer', Object.assign({}, exports.configs.autoprefixer)],
+                [require.resolve('postcss-preset-env'), {}],
+                [require.resolve('autoprefixer'), Object.assign({}, exports.configs.autoprefixer)],
                 ...exports.configs.extraBabelPlugins,
             ],
         } }, exports.configs.postCssLoader);

@@ -7,8 +7,6 @@ const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 const yeoman = require('yeoman-environment');
 const create_1 = __importDefault(require("./script/create"));
-const start_1 = __importDefault(require("./script/start"));
-const build_1 = __importDefault(require("./script/build"));
 const env = yeoman.createEnv();
 env.registerStub(create_1.default, 'rscript');
 exports.default = () => {
@@ -31,13 +29,13 @@ exports.default = () => {
         .command('start')
         .description('使用rscript运行开发环境项目')
         .action(function () {
-        start_1.default();
+        require('./script/start');
     });
     commander_1.program
         .command('build')
         .description('使用rscript构建生产环境项目')
         .action(function () {
-        build_1.default();
+        require('./script/build');
     });
     commander_1.program
         .command('update')

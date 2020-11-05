@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const path_1 = __importDefault(require("path"));
 const mini_css_extract_plugin_1 = __importDefault(require("mini-css-extract-plugin"));
 const parse_config_1 = require("./parse.config");
 const isDev = process.env.NODE_ENV === 'development';
@@ -23,16 +22,16 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
         isDev && {
-            loader: 'style-loader',
+            loader: require.resolve('style-loader'),
             options: Object.assign({}, parse_config_1.getStyleLoaderOptions()),
         },
         isProduction && mini_css_extract_plugin_1.default.loader,
         {
-            loader: 'css-loader',
+            loader: require.resolve('css-loader'),
             options: cssOptions,
         },
         {
-            loader: 'postcss-loader',
+            loader: require.resolve('postcss-loader'),
             options: parse_config_1.getPostLoaderOptions(),
         },
     ].filter(Boolean);
@@ -47,7 +46,7 @@ const rules = [
         exclude: /node_modules/,
         use: [
             {
-                loader: path_1.default.resolve(__dirname, '../../node_modules/babel-loader'),
+                loader: require.resolve('babel-loader'),
                 options: Object.assign({ cacheDirectory: isDev ? true : false, cacheCompression: true, compact: !isDev }, parse_config_1.getBableOptions()),
             },
         ],
@@ -82,7 +81,7 @@ const rules = [
         test: /\.(png|jpg|gif|ico)$/i,
         use: [
             {
-                loader: 'url-loader',
+                loader: require.resolve('url-loader'),
                 options: {
                     limit: parse_config_1.configs.inlineLimit,
                     name: `${parse_config_1.configs.assetsDir}/media/imgs/[name].[hash:8].[ext]`,
@@ -94,7 +93,7 @@ const rules = [
         test: /\.(woff|woff2|eot|ttf|otf|obj|gltf)$/,
         use: [
             {
-                loader: 'url-loader',
+                loader: require.resolve('url-loader'),
                 options: {
                     name: `${parse_config_1.configs.assetsDir}/media/fonts/[name].[hash:8].[ext]`,
                 },

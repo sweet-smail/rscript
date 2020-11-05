@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+console.log('config', process.env.NODE_ENV);
 const parse_config_1 = require("./parse.config");
 const plugins_1 = __importDefault(require("./plugins"));
 const loaders_1 = __importDefault(require("./loaders"));
@@ -11,9 +12,23 @@ const webpackConfig = {
     entry: parse_config_1.getEntrys(),
     output: parse_config_1.getOutput(),
     resolve: {
+        alias: parse_config_1.configs.alias,
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     externals: parse_config_1.configs.externals,
+    optimization: {
+        moduleIds: 'deterministic',
+        runtimeChunk: true,
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+            },
+        },
+    },
     // optimization: {
     // 	minimize: false, // 是否压缩
     // 	runtimeChunk: {

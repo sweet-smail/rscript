@@ -1,65 +1,77 @@
+console.log('parse', process.env.NODE_ENV);
+
 import path from 'path';
-import webpack, { config } from 'webpack';
+import webpack, { Configuration } from 'webpack';
+import lodash from 'lodash';
 import fs from 'fs';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import WebpackAnalyzer from 'webpack-bundle-analyzer';
-import defaultWebpackPlugins from './plugins';
 import defaultConfig from './default.config';
 const isProduction = process.env.NODE_ENV === 'production';
 const userConfigPath = path.resolve(process.cwd(), 'config/config.js');
 const rootSource = process.cwd();
-
 // 处理配置文件不存的情况
 const getConfigs = () => {
 	if (!fs.existsSync(userConfigPath)) {
 		return defaultConfig;
 	}
+	// console.log('合并对象', lodash.merge(defaultConfig, require(userConfigPath)));
 	return require(userConfigPath) as typeof defaultConfig;
 };
 
 export const configs = getConfigs();
+
 /**
  * @description 处理webpack 入口
+ * @returns webpack.Entry
  */
-
 export const getEntrys: () => webpack.Entry = () => {
-	if (!!configs.pages && Object.keys(configs.pages).length > 0) {
-		return configs.pages;
-	}
-	const newEntry =
-		configs.entry || path.resolve(process.cwd(), 'src/index.tsx');
-	return [
+	const webpackHotMidlleClient =
 		path.resolve(
 			__dirname,
 			'../../node_modules/webpack-hot-middleware/client.js'
-		) + '?path=/__webpack_hmr&timeout=20000',
-		newEntry,
-	];
+		) + '?path=/__webpack_hmr&timeout=20000&quiet=true&overlayWarnings=true';
+	// 如果是多页面配置
+	if (!!configs.pages && Object.keys(configs.pages).length > 0) {
+		const entryObject: webpack.Entry = {};
+		for (let pageKey in configs.pages) {
+			entryObject[pageKey] = [
+				!isProduction && (configs.pages as any)[pageKey].entry,
+				webpackHotMidlleClient,
+			].filter(Boolean) as [];
+		}
+		return entryObject;
+	}
+	return [configs.entry, !isProduction && webpackHotMidlleClient].filter(
+		Boolean
+	) as [];
 };
+
 /**
  * @description 处理出口
  */
-export const getOutput = () => {
+export const getOutput: () => Configuration['output'] = () => {
 	if (!configs.hash) {
 		return {
+			pathinfo: false,
 			publicPath: configs.publicPath,
-			filename: `${configs.assetsDir}/js/bundle.js`,
+			filename: `${configs.assetsDir}/js/[name].js`,
 			chunkFilename: `${configs.assetsDir}/js/[name].chunk.js`,
-			path: path.resolve(rootSource, configs.outPutDir || 'dist'),
+			path: path.resolve(rootSource, configs.outPutDir),
 		};
 	}
 	return {
 		publicPath: configs.publicPath,
+		pathinfo: false,
 		filename: isProduction
 			? `${configs.assetsDir}/js/[name].[chunkhash:8].js`
-			: `${configs.assetsDir}/js/bundle.js`,
+			: `${configs.assetsDir}/js/[name].js`,
 		chunkFilename: isProduction
 			? `${configs.assetsDir}/js/[name].[chunkhash:8].chunk.js`
 			: `${configs.assetsDir}/js/[name].chunk.js`,
-		path: path.resolve(rootSource, configs.outPutDir || 'dist'),
+		path: path.resolve(rootSource, configs.outPutDir),
 	};
 };
-export const getDevtool = () => {
+
+export const getDevtool: () => Configuration['devtool'] = () => {
 	return configs.devtool || isProduction ? false : 'cheap-module-source-map';
 };
 
@@ -103,12 +115,13 @@ export const getCssloaderOptions = () => {
 /**
  * @description post-loader 相关配置项
  */
+console.log('autoprefixer', configs.autoprefixer);
 export const getPostLoaderOptions = () => {
 	return {
 		postcssOptions: {
 			plugins: [
-				['postcss-preset-env', {}],
-				['autoprefixer', { ...configs.autoprefixer }],
+				[require.resolve('postcss-preset-env'), {}],
+				[require.resolve('autoprefixer'), { ...configs.autoprefixer }],
 				...configs.extraBabelPlugins,
 			],
 		},
