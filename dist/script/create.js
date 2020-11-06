@@ -66,11 +66,12 @@ class default_1 extends yeoman_generator_1.default {
             // 修改package.json
             this.fs.extendJSON(path_1.default.resolve(newTemplatePath, 'package.json'), {
                 dependencies: pkg.dependencies,
+                devDependencies: pkg.devDependencies,
             }, undefined, 2);
             //如果不是ts项目，则移除
             if (!this.answers.typescript) {
                 this.fs.delete(path_1.default.resolve(newTemplatePath, 'tsconfig.json'));
-                this.fs.delete(path_1.default.resolve(newTemplatePath, 'global.d.ts'));
+                this.fs.delete(path_1.default.resolve(newTemplatePath, 'src/global.d.ts'));
             }
         }
         catch (error) {

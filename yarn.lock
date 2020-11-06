@@ -767,7 +767,7 @@
 
 "@babel/plugin-transform-typescript@^7.12.1":
   version "7.12.1"
-  resolved "https://registry.npm.taobao.org/@babel/plugin-transform-typescript/download/@babel/plugin-transform-typescript-7.12.1.tgz#d92cc0af504d510e26a754a7dbc2e5c8cd9c7ab4"
+  resolved "https://registry.npm.taobao.org/@babel/plugin-transform-typescript/download/@babel/plugin-transform-typescript-7.12.1.tgz?cache=0&sync_timestamp=1602802164420&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fplugin-transform-typescript%2Fdownload%2F%40babel%2Fplugin-transform-typescript-7.12.1.tgz#d92cc0af504d510e26a754a7dbc2e5c8cd9c7ab4"
   integrity sha1-2SzAr1BNUQ4mp1Sn28LlyM2cerQ=
   dependencies:
     "@babel/helper-create-class-features-plugin" "^7.12.1"
@@ -887,7 +887,7 @@
 
 "@babel/preset-typescript@^7.12.1":
   version "7.12.1"
-  resolved "https://registry.npm.taobao.org/@babel/preset-typescript/download/@babel/preset-typescript-7.12.1.tgz?cache=0&sync_timestamp=1602802499808&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fpreset-typescript%2Fdownload%2F%40babel%2Fpreset-typescript-7.12.1.tgz#86480b483bb97f75036e8864fe404cc782cc311b"
+  resolved "https://registry.npm.taobao.org/@babel/preset-typescript/download/@babel/preset-typescript-7.12.1.tgz?cache=0&sync_timestamp=1602801827867&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fpreset-typescript%2Fdownload%2F%40babel%2Fpreset-typescript-7.12.1.tgz#86480b483bb97f75036e8864fe404cc782cc311b"
   integrity sha1-hkgLSDu5f3UDbohk/kBMx4LMMRs=
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
@@ -2853,6 +2853,14 @@ figures@^3.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
+file-loader@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.npm.taobao.org/file-loader/download/file-loader-6.2.0.tgz?cache=0&sync_timestamp=1603816876316&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffile-loader%2Fdownload%2Ffile-loader-6.2.0.tgz#baef7cf8e1840df325e4390b4484879480eebe4d"
+  integrity sha1-uu98+OGEDfMl5DkLRISHlIDuvk0=
+  dependencies:
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
+
 filelist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/filelist/download/filelist-1.0.1.tgz#f10d1a3ae86c1694808e8f20906f43d4c9132dbb"
@@ -3933,7 +3941,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "^3.0.0"
 
-lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20:
+lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.4:
   version "4.17.20"
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha1-tEqbYpe8tpjxxRo1RaKzs2jVnFI=
@@ -5626,6 +5634,13 @@ static-extend@^0.1.1:
   dependencies:
     define-property "^0.2.5"
     object-copy "^0.1.0"
+
+stats-webpack-plugin@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npm.taobao.org/stats-webpack-plugin/download/stats-webpack-plugin-0.7.0.tgz#ccffe9b745de8bbb155571e063f8263fc0e2bc06"
+  integrity sha1-zP/pt0Xei7sVVXHgY/gmP8DivAY=
+  dependencies:
+    lodash "^4.17.4"
 
 "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
   version "1.5.0"

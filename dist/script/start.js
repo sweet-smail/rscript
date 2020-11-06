@@ -36,10 +36,11 @@ const app = express_1.default();
 app
     .use(webpack_dev_middleware_1.default(compiler, {
     // logLevel: 'error',
+    logLevel: 'error',
     publicPath: (_a = webpack_config_1.default.output) === null || _a === void 0 ? void 0 : _a.publicPath,
 }))
     .use(webpack_hot_middleware_1.default(compiler, {
-    log: console.log,
+    log: false,
     path: '/__webpack_hmr',
     heartbeat: 2000,
 }));

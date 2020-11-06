@@ -23,12 +23,13 @@ app
 	.use(
 		webpackDevMiddleware(compiler, {
 			// logLevel: 'error',
+			logLevel: 'error',
 			publicPath: config.output?.publicPath as string,
 		})
 	)
 	.use(
 		webpackHotMiddleware(compiler, {
-			log: console.log,
+			log: false,
 			path: '/__webpack_hmr',
 			heartbeat: 2000,
 		})

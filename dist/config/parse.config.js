@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBableOptions = exports.getSassLoaderOptions = exports.getLessLoaderOptions = exports.getStyleLoaderOptions = exports.getPostLoaderOptions = exports.getCssloaderOptions = exports.getDevServer = exports.getDevtool = exports.getOutput = exports.getEntrys = exports.configs = void 0;
-console.log('parse', process.env.NODE_ENV);
 const path_1 = __importDefault(require("path"));
+const lodash_1 = __importDefault(require("lodash"));
 const fs_1 = __importDefault(require("fs"));
 const default_config_1 = __importDefault(require("./default.config"));
 const isProduction = process.env.NODE_ENV === 'production';
@@ -17,7 +17,7 @@ const getConfigs = () => {
         return default_config_1.default;
     }
     // console.log('合并对象', lodash.merge(defaultConfig, require(userConfigPath)));
-    return require(userConfigPath);
+    return lodash_1.default.merge(default_config_1.default, require(userConfigPath));
 };
 exports.configs = getConfigs();
 /**
@@ -102,13 +102,12 @@ exports.getCssloaderOptions = () => {
 /**
  * @description post-loader 相关配置项
  */
-console.log('autoprefixer', exports.configs.autoprefixer);
 exports.getPostLoaderOptions = () => {
     return Object.assign({ postcssOptions: {
             plugins: [
                 [require.resolve('postcss-preset-env'), {}],
                 [require.resolve('autoprefixer'), Object.assign({}, exports.configs.autoprefixer)],
-                ...exports.configs.extraBabelPlugins,
+                ...exports.configs.extraPostCSSPlugins,
             ],
         } }, exports.configs.postCssLoader);
 };
@@ -116,7 +115,7 @@ exports.getStyleLoaderOptions = () => {
     return Object.assign({}, exports.configs.styleLoader);
 };
 exports.getLessLoaderOptions = () => {
-    return Object.assign({}, exports.configs.styleLoader);
+    return Object.assign({}, exports.configs.lessLoader);
 };
 exports.getSassLoaderOptions = () => {
     return Object.assign({}, exports.configs.sassLoader);
@@ -138,10 +137,6 @@ exports.getBableOptions = () => {
             require('@babel/preset-react'),
             ...exports.configs.extraBabelPresets,
         ],
-        plugins: [
-        // '@babel/proposal-class-properties',
-        // '@babel/proposal-object-rest-spread',
-        // ...configs.extraBabelPlugins,
-        ],
+        plugins: [...exports.configs.extraBabelPlugins],
     };
 };

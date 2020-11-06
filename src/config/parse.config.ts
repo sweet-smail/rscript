@@ -1,5 +1,3 @@
-console.log('parse', process.env.NODE_ENV);
-
 import path from 'path';
 import webpack, { Configuration } from 'webpack';
 import lodash from 'lodash';
@@ -14,7 +12,10 @@ const getConfigs = () => {
 		return defaultConfig;
 	}
 	// console.log('合并对象', lodash.merge(defaultConfig, require(userConfigPath)));
-	return require(userConfigPath) as typeof defaultConfig;
+	return lodash.merge(
+		defaultConfig,
+		require(userConfigPath)
+	) as typeof defaultConfig;
 };
 
 export const configs = getConfigs();
@@ -115,14 +116,13 @@ export const getCssloaderOptions = () => {
 /**
  * @description post-loader 相关配置项
  */
-console.log('autoprefixer', configs.autoprefixer);
 export const getPostLoaderOptions = () => {
 	return {
 		postcssOptions: {
 			plugins: [
 				[require.resolve('postcss-preset-env'), {}],
 				[require.resolve('autoprefixer'), { ...configs.autoprefixer }],
-				...configs.extraBabelPlugins,
+				...configs.extraPostCSSPlugins,
 			],
 		},
 		...configs.postCssLoader,
@@ -135,7 +135,7 @@ export const getStyleLoaderOptions = () => {
 };
 export const getLessLoaderOptions = () => {
 	return {
-		...configs.styleLoader,
+		...configs.lessLoader,
 	};
 };
 export const getSassLoaderOptions = () => {
@@ -157,14 +157,10 @@ export const getBableOptions = () => {
 					corejs: 3,
 				},
 			],
-			require('@babel/preset-typescript'),
+			require('@babel/preset-typescript'), // 转换ts代码
 			require('@babel/preset-react'),
 			...configs.extraBabelPresets,
 		],
-		plugins: [
-			// '@babel/proposal-class-properties',
-			// '@babel/proposal-object-rest-spread',
-			// ...configs.extraBabelPlugins,
-		],
+		plugins: [...configs.extraBabelPlugins],
 	};
 };

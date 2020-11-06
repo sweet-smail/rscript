@@ -2,7 +2,7 @@
     "name": "<%=name %>",
     "description": "<%=description %>",
     "scripts": {
-        "start": "rscript start",
+        "start": "tsc -w & rscript start",
         "build": "rscript build",
         "test": "rscript test"
     },

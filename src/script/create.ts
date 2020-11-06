@@ -74,6 +74,7 @@ export default class extends Generator {
 				path.resolve(newTemplatePath, 'package.json'),
 				{
 					dependencies: pkg.dependencies,
+					devDependencies: pkg.devDependencies,
 				},
 				undefined,
 				2
@@ -81,7 +82,7 @@ export default class extends Generator {
 			//如果不是ts项目，则移除
 			if (!this.answers.typescript) {
 				this.fs.delete(path.resolve(newTemplatePath, 'tsconfig.json'));
-				this.fs.delete(path.resolve(newTemplatePath, 'global.d.ts'));
+				this.fs.delete(path.resolve(newTemplatePath, 'src/global.d.ts'));
 			}
 		} catch (error) {
 			this.log(chalk.red('rscript发生错误:', error.message));

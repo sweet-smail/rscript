@@ -41,9 +41,10 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     return loaders;
 };
 const rules = [
+    // { test: /\.m?js/, type: 'javascript/auto' },
     {
-        test: /\.(ts|js)x?$/,
-        exclude: /node_modules/,
+        test: /\.(ts|tsx)$/i,
+        exclude: /(node_modules|bower_components)/,
         use: [
             {
                 loader: require.resolve('babel-loader'),
@@ -54,14 +55,14 @@ const rules = [
     //css 编译
     {
         test: cssRegex,
-        exclude: cssModuleRegex,
-        use: getStyleLoaders(Object.assign({ importLoaders: 1 }, parse_config_1.getCssloaderOptions())),
+        use: getStyleLoaders(Object.assign({}, parse_config_1.getCssloaderOptions())),
     },
     //less 编译
     {
         test: lessRegex,
-        exclude: lessModuleRegex,
-        use: getStyleLoaders({}, {
+        use: getStyleLoaders({
+            importLoaders: 2,
+        }, {
             loader: 'less-loader',
             options: parse_config_1.getLessLoaderOptions(),
         }),
@@ -69,9 +70,8 @@ const rules = [
     //sass 编译
     {
         test: sassRegex,
-        exclude: sassModuleRegex,
         use: getStyleLoaders({
-            importLoaders: 3,
+            importLoaders: 2,
         }, {
             loader: 'sass-loader',
             options: parse_config_1.getSassLoaderOptions(),

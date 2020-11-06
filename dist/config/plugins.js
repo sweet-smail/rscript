@@ -9,6 +9,7 @@ const path_1 = __importDefault(require("path"));
 const clean_webpack_plugin_1 = require("clean-webpack-plugin");
 const mini_css_extract_plugin_1 = __importDefault(require("mini-css-extract-plugin"));
 const fork_ts_checker_webpack_plugin_1 = __importDefault(require("fork-ts-checker-webpack-plugin"));
+const StatsPlugin = require('stats-webpack-plugin');
 const parse_config_1 = require("./parse.config");
 const plugins = [];
 // 如果是多入口，则需要添加plugin
@@ -35,14 +36,19 @@ else {
         minify: htmlWebpackPluginMinify,
     }));
 }
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
-    plugins.push(new webpack_1.default.HotModuleReplacementPlugin(), new fork_ts_checker_webpack_plugin_1.default({
-        async: false,
-        formatter: undefined,
+    plugins.push(new webpack_1.default.HotModuleReplacementPlugin(), 
+    //用单独一个进城来进行 ts类型检查
+    new fork_ts_checker_webpack_plugin_1.default({
+    // async: false, // 错误信息是否影响webpack编译
     }));
 }
 else {
-    plugins.push(new clean_webpack_plugin_1.CleanWebpackPlugin(), new mini_css_extract_plugin_1.default({
+    plugins.push(new clean_webpack_plugin_1.CleanWebpackPlugin(), new StatsPlugin('stats.json', {
+        chunkModules: true,
+        exclude: [/node_modules[\\\/]react/],
+    }), new mini_css_extract_plugin_1.default({
         filename: parse_config_1.configs.hash
             ? `${parse_config_1.configs.assetsDir}/css/[name].[contenthash:8].css`
             : `${parse_config_1.configs.assetsDir}/css/[name].css`,

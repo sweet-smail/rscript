@@ -7,7 +7,6 @@ const webpack_1 = __importDefault(require("webpack"));
 const ora_1 = __importDefault(require("ora"));
 const chalk_1 = __importDefault(require("chalk"));
 process.env.NODE_ENV = 'production';
-console.log('buildts', process.env.NODE_ENV);
 const webpack_config_1 = __importDefault(require("../config/webpack.config"));
 let compiler;
 let buildTask = ora_1.default(`${chalk_1.default.bold('Rscrit 正在构建项目')}`).start();

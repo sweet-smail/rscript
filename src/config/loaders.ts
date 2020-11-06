@@ -53,36 +53,43 @@ const getStyleLoaders: (
 	return loaders;
 };
 const rules: webpack.ModuleOptions['rules'] = [
+	// { test: /\.m?js/, type: 'javascript/auto' },
 	{
-		test: /\.(ts|js)x?$/,
-		exclude: /node_modules/,
+		test: /\.(ts|tsx)$/i,
+		exclude: /(node_modules|bower_components)/,
 		use: [
 			{
 				loader: require.resolve('babel-loader'),
 				options: {
 					cacheDirectory: isDev ? true : false,
-					cacheCompression: true,
+					cacheCompression: true, //压缩
 					compact: !isDev,
 					...getBableOptions(),
 				},
 			},
+			// {
+			// 	loader: require.resolve('ts-loader'),
+			// 	options: {
+			// 		// 关闭类型检查只进行转移，将类型检查交给fork-ts-checker-webpack-plugin,在别的线程进城检查
+			// 		transpileOnly: true,
+			// 	},
+			// },
 		],
 	},
 	//css 编译
 	{
 		test: cssRegex,
-		exclude: cssModuleRegex,
 		use: getStyleLoaders({
-			importLoaders: 1,
 			...getCssloaderOptions(),
 		}),
 	},
 	//less 编译
 	{
 		test: lessRegex,
-		exclude: lessModuleRegex,
 		use: getStyleLoaders(
-			{},
+			{
+				importLoaders: 2,
+			},
 			{
 				loader: 'less-loader',
 				options: getLessLoaderOptions(),
@@ -92,10 +99,9 @@ const rules: webpack.ModuleOptions['rules'] = [
 	//sass 编译
 	{
 		test: sassRegex,
-		exclude: sassModuleRegex,
 		use: getStyleLoaders(
 			{
-				importLoaders: 3,
+				importLoaders: 2,
 			},
 			{
 				loader: 'sass-loader',

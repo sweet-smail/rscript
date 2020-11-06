@@ -3,7 +3,6 @@ import ora from 'ora';
 import chalk from 'chalk';
 process.env.NODE_ENV = 'production';
 
-console.log('buildts', process.env.NODE_ENV);
 import config from '../config/webpack.config';
 let compiler: webpack.Compiler;
 let buildTask = ora(`${chalk.bold('Rscrit 正在构建项目')}`).start();

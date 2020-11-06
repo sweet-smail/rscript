@@ -1,11 +1,15 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+const StatsPlugin = require('stats-webpack-plugin');
 import { configs } from './parse.config';
+
 const plugins: webpack.Configuration['plugins'] = [];
+
 // 如果是多入口，则需要添加plugin
 const htmlWebpackPluginMinify = {
 	removeComments: true,
@@ -40,18 +44,22 @@ if (configs.pages && Object.keys(configs.pages).length > 0) {
 		})
 	);
 }
-
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
 	plugins.push(
 		new webpack.HotModuleReplacementPlugin(),
+		//用单独一个进城来进行 ts类型检查
 		new ForkTsCheckerWebpackPlugin({
-			async: false,
-			formatter: undefined,
+			// async: false, // 错误信息是否影响webpack编译
 		})
 	);
 } else {
 	plugins.push(
 		new CleanWebpackPlugin(),
+		new StatsPlugin('stats.json', {
+			chunkModules: true,
+			exclude: [/node_modules[\\\/]react/],
+		}),
 		new MiniCssExtractPlugin({
 			filename: configs.hash
 				? `${configs.assetsDir}/css/[name].[contenthash:8].css`
