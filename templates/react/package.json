@@ -29,7 +29,9 @@
     },
     "keywords": [],
     "author": "",
-    "dependencies": {},
+    "dependencies": {
+        "core-js": "3",
+    },
     "devDependencies": {},
     "browserslist": {
         "production": [

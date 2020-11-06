@@ -108,6 +108,10 @@ exports.default = {
      * @default []
      */
     extraPostCSSPlugins: [],
+    // 自动重置样式设置
+    postCssAutoresetOptions: {
+        reset: 'sizes',
+    },
     //设置要复制到输出目录的文件或文件夹。
     copy: [],
     /**
@@ -132,11 +136,14 @@ exports.default = {
     hash: true,
     //配置图片文件是否走base64的编译的阈值
     inlineLimit: 10000,
-    targets: {
-        chrome: 49,
-        firefox: 64,
-        safari: 10,
-        edge: 13,
-        ios: 10,
-    },
+    targets: process.env.NODE_ENV === 'development'
+        ? 'last 1 version'
+        : {
+            chrome: 49,
+            firefox: 64,
+            safari: 10,
+            edge: 13,
+            ios: 10,
+            ie: 11,
+        },
 };

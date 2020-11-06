@@ -32,7 +32,7 @@ compiler.run((err, stats) => {
 	};
 	if (stats?.hasErrors()) {
 		console.error(
-			stats.toJson({
+			stats.toString({
 				...statsInfoJson,
 
 				logging: 'error',
@@ -42,7 +42,7 @@ compiler.run((err, stats) => {
 	}
 	if (stats?.hasWarnings()) {
 		console.warn(
-			stats.toJson({
+			stats.toString({
 				...statsInfoJson,
 				logging: 'warn',
 			})

@@ -107,8 +107,14 @@ exports.getCssloaderOptions = () => {
 exports.getPostLoaderOptions = () => {
     return Object.assign({ postcssOptions: {
             plugins: [
-                [require.resolve('postcss-preset-env'), {}],
-                [require.resolve('autoprefixer'), Object.assign({}, exports.configs.autoprefixer)],
+                [
+                    require.resolve('postcss-preset-env'),
+                    {
+                        browsers: exports.configs.targets,
+                        autoprefixer: Object.assign({}, exports.configs.autoprefixer),
+                    },
+                ],
+                require('postcss-autoreset')(exports.configs.postCssAutoresetOptions),
                 ...exports.configs.extraPostCSSPlugins,
             ],
         } }, exports.configs.postCssLoader);
@@ -135,12 +141,16 @@ exports.getBableOptions = () => {
                     useBuiltIns: 'usage',
                     modules: false,
                     targets: exports.configs.targets,
+                    corejs: 3,
                 },
             ],
             require('@babel/preset-typescript'),
             require('@babel/preset-react'),
             ...exports.configs.extraBabelPresets,
         ],
-        plugins: [...exports.configs.extraBabelPlugins],
+        plugins: [
+            // [require.resolve('@babel/plugin-transform-runtime'), { corejs: 3 }],
+            ...exports.configs.extraBabelPlugins,
+        ],
     };
 };

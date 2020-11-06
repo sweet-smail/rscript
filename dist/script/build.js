@@ -36,11 +36,11 @@ compiler.run((err, stats) => {
         builtAt: true,
     };
     if (stats === null || stats === void 0 ? void 0 : stats.hasErrors()) {
-        console.error(stats.toJson(Object.assign(Object.assign({}, statsInfoJson), { logging: 'error' })));
+        console.error(stats.toString(Object.assign(Object.assign({}, statsInfoJson), { logging: 'error' })));
         process.exit(1);
     }
     if (stats === null || stats === void 0 ? void 0 : stats.hasWarnings()) {
-        console.warn(stats.toJson(Object.assign(Object.assign({}, statsInfoJson), { logging: 'warn' })));
+        console.warn(stats.toString(Object.assign(Object.assign({}, statsInfoJson), { logging: 'warn' })));
     }
     buildTask.succeed('构建成功');
     process.exit();

@@ -122,8 +122,14 @@ export const getPostLoaderOptions = () => {
 	return {
 		postcssOptions: {
 			plugins: [
-				[require.resolve('postcss-preset-env'), {}],
-				[require.resolve('autoprefixer'), { ...configs.autoprefixer }],
+				[
+					require.resolve('postcss-preset-env'),
+					{
+						browsers: configs.targets,
+						autoprefixer: { ...configs.autoprefixer },
+					},
+				],
+				require('postcss-autoreset')(configs.postCssAutoresetOptions),
 				...configs.extraPostCSSPlugins,
 			],
 		},
@@ -150,7 +156,6 @@ export const getSassLoaderOptions = () => {
  * @description bable配置
  */
 export const getBableOptions = () => {
-	console.log(configs.targets);
 	return {
 		presets: [
 			[
@@ -159,12 +164,16 @@ export const getBableOptions = () => {
 					useBuiltIns: 'usage',
 					modules: false,
 					targets: configs.targets,
+					corejs: 3,
 				},
 			],
 			require('@babel/preset-typescript'), // 转换ts代码
 			require('@babel/preset-react'),
 			...configs.extraBabelPresets,
 		],
-		plugins: [...configs.extraBabelPlugins],
+		plugins: [
+			// [require.resolve('@babel/plugin-transform-runtime'), { corejs: 3 }],
+			...configs.extraBabelPlugins,
+		],
 	};
 };
