@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const webpack_1 = __importDefault(require("webpack"));
 const html_webpack_plugin_1 = __importDefault(require("html-webpack-plugin"));
 const path_1 = __importDefault(require("path"));
+const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
 const clean_webpack_plugin_1 = require("clean-webpack-plugin");
 const mini_css_extract_plugin_1 = __importDefault(require("mini-css-extract-plugin"));
 const fork_ts_checker_webpack_plugin_1 = __importDefault(require("fork-ts-checker-webpack-plugin"));
@@ -36,7 +37,6 @@ else {
         minify: htmlWebpackPluginMinify,
     }));
 }
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
     plugins.push(new webpack_1.default.HotModuleReplacementPlugin(), 
     //用单独一个进城来进行 ts类型检查
@@ -55,6 +55,16 @@ else {
         chunkFilename: parse_config_1.configs.hash
             ? `${parse_config_1.configs.assetsDir}/css/[name].[contenthash:8].chunk.css`
             : `${parse_config_1.configs.assetsDir}/css/[name].chunk.css`,
+    }));
+}
+if (parse_config_1.configs.analyze) {
+    plugins.push(new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
+        analyzerMode: 'server',
+        analyzerHost: '127.0.0.1',
+        analyzerPort: 60000,
+        reportFilename: 'analyzer.html',
+        openAnalyzer: true,
+        generateStatsFile: true,
     }));
 }
 exports.default = plugins;

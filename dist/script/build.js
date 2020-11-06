@@ -21,16 +21,27 @@ catch (error) {
 }
 compiler.run((err, stats) => {
     if (err) {
-        console.error(err.stack || err);
+        console.error('编译错误:', err.stack || err);
         return;
     }
-    const info = stats === null || stats === void 0 ? void 0 : stats.toJson();
+    const statsInfoJson = {
+        colors: true,
+        version: true,
+        hash: true,
+        warningsCount: true,
+        outputPath: true,
+        errorsCount: true,
+        env: true,
+        publicPath: true,
+        builtAt: true,
+    };
     if (stats === null || stats === void 0 ? void 0 : stats.hasErrors()) {
-        console.error(info.errors);
+        console.error(stats.toJson(Object.assign(Object.assign({}, statsInfoJson), { logging: 'error' })));
         process.exit(1);
     }
     if (stats === null || stats === void 0 ? void 0 : stats.hasWarnings()) {
-        console.error(info.warnings);
+        console.warn(stats.toJson(Object.assign(Object.assign({}, statsInfoJson), { logging: 'warn' })));
     }
     buildTask.succeed('构建成功');
+    process.exit();
 });

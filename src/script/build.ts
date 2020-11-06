@@ -16,17 +16,38 @@ try {
 }
 compiler.run((err, stats) => {
 	if (err) {
-		console.error(err.stack || err);
+		console.error('编译错误:', err.stack || err);
 		return;
 	}
-	const info = stats?.toJson();
+	const statsInfoJson = {
+		colors: true,
+		version: true,
+		hash: true,
+		warningsCount: true,
+		outputPath: true,
+		errorsCount: true,
+		env: true,
+		publicPath: true,
+		builtAt: true,
+	};
 	if (stats?.hasErrors()) {
-		console.error(info.errors);
+		console.error(
+			stats.toJson({
+				...statsInfoJson,
+
+				logging: 'error',
+			})
+		);
 		process.exit(1);
 	}
 	if (stats?.hasWarnings()) {
-		console.error(info.warnings);
+		console.warn(
+			stats.toJson({
+				...statsInfoJson,
+				logging: 'warn',
+			})
+		);
 	}
-
 	buildTask.succeed('构建成功');
+	process.exit();
 });

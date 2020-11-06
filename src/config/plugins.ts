@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
-
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -44,7 +44,6 @@ if (configs.pages && Object.keys(configs.pages).length > 0) {
 		})
 	);
 }
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
 	plugins.push(
 		new webpack.HotModuleReplacementPlugin(),
@@ -67,6 +66,18 @@ if (process.env.NODE_ENV === 'development') {
 			chunkFilename: configs.hash
 				? `${configs.assetsDir}/css/[name].[contenthash:8].chunk.css`
 				: `${configs.assetsDir}/css/[name].chunk.css`,
+		})
+	);
+}
+if (configs.analyze) {
+	plugins.push(
+		new BundleAnalyzerPlugin({
+			analyzerMode: 'server',
+			analyzerHost: '127.0.0.1',
+			analyzerPort: 60000,
+			reportFilename: 'analyzer.html',
+			openAnalyzer: true,
+			generateStatsFile: true,
 		})
 	);
 }

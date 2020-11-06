@@ -56,7 +56,7 @@ module.exports = {
 	 * @type Boolean| {}
 	 *
 	 */
-	analyze: {},
+	analyze: false,
 	/**
 	 * @description 设置autoprefixer 配置项
 	 */

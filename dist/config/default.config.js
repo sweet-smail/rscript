@@ -74,7 +74,7 @@ exports.default = {
      * @type Boolean| {}
      *
      */
-    analyze: {},
+    analyze: false,
     /**
      * @description 设置autoprefixer 配置项
      * @description {}
@@ -132,4 +132,11 @@ exports.default = {
     hash: true,
     //配置图片文件是否走base64的编译的阈值
     inlineLimit: 10000,
+    targets: {
+        chrome: 49,
+        firefox: 64,
+        safari: 10,
+        edge: 13,
+        ios: 10,
+    },
 };

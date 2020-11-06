@@ -65,7 +65,9 @@ exports.getOutput = () => {
     };
 };
 exports.getDevtool = () => {
-    return exports.configs.devtool || isProduction ? false : 'cheap-module-source-map';
+    return exports.configs.devtool || isProduction
+        ? false
+        : 'eval-cheap-module-source-map';
 };
 /**
  * @description 获取webpack devServer的配置
@@ -124,13 +126,15 @@ exports.getSassLoaderOptions = () => {
  * @description bable配置
  */
 exports.getBableOptions = () => {
+    console.log(exports.configs.targets);
     return {
         presets: [
             [
                 require('@babel/preset-env'),
                 {
-                    useBuiltIns: 'entry',
-                    corejs: 3,
+                    useBuiltIns: 'usage',
+                    modules: false,
+                    targets: exports.configs.targets,
                 },
             ],
             require('@babel/preset-typescript'),

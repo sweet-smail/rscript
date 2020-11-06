@@ -19,7 +19,7 @@ const webpackConfig = {
     recordsPath: path_1.default.resolve(process.cwd(), 'dist/records.json'),
     profile: isProduction,
     performance: {
-        hints: isDevelopment ? 'warning' : 'error',
+        hints: 'warning',
         maxEntrypointSize: 250000,
         maxAssetSize: 250000,
     },
@@ -40,6 +40,7 @@ const webpackConfig = {
                     test: /[\\/]node_modules[\\/]/,
                     priority: -10,
                     idHint: 'vendors',
+                    chunks: 'all',
                 },
                 default: {
                     minChunks: 2,

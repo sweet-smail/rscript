@@ -73,7 +73,9 @@ export const getOutput: () => Configuration['output'] = () => {
 };
 
 export const getDevtool: () => Configuration['devtool'] = () => {
-	return configs.devtool || isProduction ? false : 'cheap-module-source-map';
+	return configs.devtool || isProduction
+		? false
+		: 'eval-cheap-module-source-map';
 };
 
 /**
@@ -148,13 +150,15 @@ export const getSassLoaderOptions = () => {
  * @description bable配置
  */
 export const getBableOptions = () => {
+	console.log(configs.targets);
 	return {
 		presets: [
 			[
 				require('@babel/preset-env'),
 				{
-					useBuiltIns: 'entry',
-					corejs: 3,
+					useBuiltIns: 'usage',
+					modules: false,
+					targets: configs.targets,
 				},
 			],
 			require('@babel/preset-typescript'), // 转换ts代码
