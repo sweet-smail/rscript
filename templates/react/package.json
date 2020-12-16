@@ -1,44 +1,51 @@
 {
-    "name": "<%=name %>",
-    "description": "<%=description %>",
-    "scripts": {
-        "start": "tsc -w & rscript start",
-        "build": "rscript build",
-        "test": "rscript test"
-    },
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": ""
-    },
-    "lint-staged": {
-        "*.{js,jsx}": [
-            "eslint --fix",
-            "git add"
-        ],
-        "packages/**/*.{ts,d.ts}": [
-            "npm run build:docs-api",
-            "git adddocs"
-        ]
-    },
-    "husky": {
-        "hooks": {
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-            "pre-commit": "lint-staged"
-        }
-    },
-    "keywords": [],
-    "author": "",
-    "dependencies": {
-        "core-js": "3",
-    },
-    "devDependencies": {},
-    "browserslist": {
-        "production": [
-            "defaults"
-        ],
-        "development": [
-            "last 1 version"
-        ]
+  "name": "<%=name %>",
+  "description": "<%=description %>",
+  "scripts": {
+    "start": "rca start",
+    "build": "rca build",
+    "test": "rca test",
+    "lint": "eslint"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "packages/**/*.{ts,d.ts}": [
+      "npm run build:docs-api",
+      "git adddocs"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
     }
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "eslint": "^7.15.0",
+    "@typescript-eslint/parser": "^4.9.1",
+    "eslint-plugin-react": "^7.21.5",
+    "@typescript-eslint/eslint-plugin": "^4.9.1",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.5",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0",
+    "@typescript-eslint/parser": "^4.9.1",
+    "eslint-plugin-react": "^7.21.5",
+    "@typescript-eslint/eslint-plugin": "^4.9.1"
+  }
 }
