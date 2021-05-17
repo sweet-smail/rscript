@@ -1,16 +1,17 @@
 import webpack from "webpack";
-import path from "path";
 import { getEntrys, getOutput, getDevtool, configs } from "./parse.config";
 import plugins from "./plugins";
 import moduleRules from "./loaders";
 const isDevelopment = process.env.NODE_ENV === "development";
 const isProduction = process.env.NODE_ENV === "production";
+
 const webpackConfig: webpack.Configuration = {
   entry: getEntrys(),
   output: getOutput(),
+
   resolve: {
     alias: configs.alias,
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: [".ts", ".tsx", ".js", ".json"],
   },
   // recordsPath: path.resolve(process.cwd(), 'dist/records.json'),
   // profile: isProduction,
@@ -31,27 +32,36 @@ const webpackConfig: webpack.Configuration = {
       chunks: "all", // 为所有的chunk 提取公共文件 默认为async 则为所有异步加载的chunk 提取公共文件
       // 按照某种规则进行拆分
       cacheGroups: {
-        vendor: {
+        vendors: {
+          // 基本框架
+          chunks: "all",
+          test: /(react|react-dom|react-dom-router)/,
+          priority: 100,
           name: "vendors",
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          idHint: "vendors",
-          chunks: "all"
         },
-        default: {
+        "async-commons": {
+          // 其余异步加载包
+          chunks: "async",
           minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
+          name: "async-commons",
+          priority: 90,
+        },
+        commons: {
+          // 其余同步加载包
+          chunks: "all",
+          minChunks: 2,
+          name: "commons",
+          priority: 80,
+        },
+      },
+    },
   },
 
   mode: isDevelopment ? "development" : "production",
   devtool: getDevtool(),
   plugins: plugins,
   module: {
-    rules: moduleRules
-  }
+    rules: moduleRules,
+  },
 };
 export default webpackConfig;

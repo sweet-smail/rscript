@@ -1,6 +1,6 @@
 {
   "name": "rca",
-  "version": "0.0.19",
+  "version": "0.0.34",
   "description": "richard react 脚手架 ",
   "keywords": [
     "脚手架",
@@ -14,7 +14,6 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "lint": "eslint src",
     "start": "tsc -w"
   },
   "files": [
@@ -25,9 +24,10 @@
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-env": "^7.14.0",
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
+    "@types/mini-css-extract-plugin": "^1.4.2",
     "babel-loader": "^8.1.0",
     "browserslist": "^4.14.6",
     "chalk": "^4.1.0",
@@ -40,7 +40,7 @@
     "html-webpack-plugin": "^4.5.0",
     "http-proxy-middleware": "^1.0.6",
     "lodash": "^4.17.20",
-    "mini-css-extract-plugin": "^1.2.1",
+    "mini-css-extract-plugin": "^1.5.0",
     "open": "^7.3.0",
     "ora": "^5.1.0",
     "postcss": "^8.1.4",
@@ -52,7 +52,7 @@
     "url-loader": "^4.1.1",
     "webpack": "5.10.3",
     "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-dev-middleware": "3.7.2",
+    "webpack-dev-middleware": "4.1.0",
     "webpack-hot-middleware": "^2.25.0",
     "yeoman-environment": "^2.10.3",
     "yeoman-generator": "^4.12.0"
@@ -63,12 +63,12 @@
     "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
     "@types/html-webpack-plugin": "^3.2.4",
     "@types/lodash": "^4.14.164",
-    "@types/mini-css-extract-plugin": "^1.2.0",
     "@types/ora": "^3.2.0",
     "@types/webpack-bundle-analyzer": "^3.9.0",
-    "@types/webpack-dev-middleware": "^3.7.2",
+    "@types/webpack-dev-middleware": "4.1.2",
     "@types/webpack-hot-middleware": "^2.25.3",
     "@types/webpack-manifest-plugin": "^2.1.0",
-    "@types/yeoman-generator": "^4.11.3"
+    "@types/yeoman-generator": "^4.11.3",
+    "speed-measure-webpack-plugin": "^1.5.0"
   }
 }

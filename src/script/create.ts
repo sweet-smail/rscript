@@ -5,9 +5,9 @@ import { execSync } from "child_process";
 import prompts from "./prompt";
 let pkg: any = {
   dependencies: {
-    rca: require("../../package.json").version as string
+    rca: require("../../package.json").version as string,
   },
-  devDependencies: {}
+  devDependencies: {},
 };
 
 function shouldUseYarn() {
@@ -35,7 +35,7 @@ export default class extends Generator {
       pkg.devDependencies = {
         "@types/node": "^14.14.6",
         "@types/webpack-env": "^1.15.3",
-        typescript: "^3.9.7"
+        typescript: "^3.9.7",
       };
     }
     switch (this.answers.css) {
@@ -43,14 +43,14 @@ export default class extends Generator {
         pkg.dependencies = {
           ...pkg.dependencies,
           "sass-loader": "^10.0.5",
-          "node-sass": "^5.0.0"
+          "node-sass": "^5.0.0",
         };
         break;
       case "less":
         pkg.dependencies = {
           ...pkg.dependencies,
           less: "^3.12.2",
-          "less-loader": "^7.0.2"
+          "less-loader": "^7.0.2",
         };
         break;
       default:
@@ -68,7 +68,7 @@ export default class extends Generator {
         originTemplatePath,
         newTemplatePath,
         {
-          ...this.answers
+          ...this.answers,
         },
         {},
         { globOptions: { dot: true } } // 复制隐藏文件
@@ -83,8 +83,8 @@ export default class extends Generator {
           dependencies: { ...pkg.dependencies, ...packageJSON.dependencies },
           devDependencies: {
             ...pkg.devDependencies,
-            ...packageJSON.devDependencies
-          }
+            ...packageJSON.devDependencies,
+          },
         },
         undefined,
         2
@@ -105,15 +105,17 @@ export default class extends Generator {
   conflicts() {}
   install() {
     // 进入工作目录
+    process.chdir(path.resolve(process.cwd(), this.answers.name));
     try {
-      process.chdir(path.resolve(process.cwd(), this.answers.name));
       this.installDependencies({
         npm: !shouldUseYarn(),
         yarn: shouldUseYarn(),
-        bower: false
+        bower: false,
       });
     } catch (error) {
-      this.log(error.message);
+      this.log(
+        chalk.red("下载依赖失败，请手动下载\n", "错误原因:" + error.message)
+      );
     }
   }
   end() {

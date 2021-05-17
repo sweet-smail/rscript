@@ -23,13 +23,15 @@ export default {
 	 * @default {
 	 * 		port: 8080, // 默认运行端口
 			host: '127.0.0.1',
-			proxy: {}, //转发方式
+			proxy: {
+
+      }, //转发方式
 		}
 	 */
   devServer: {
     port: 8080, // 默认运行端口
     host: "127.0.0.1",
-    proxy: {} //转发方式
+    proxy: {}, //转发方式
   },
   /**
    * @description 打包入口(如果同时配置了pages,则将忽略entry)
@@ -130,5 +132,5 @@ export default {
   targets:
     process.env.NODE_ENV === "development"
       ? "last 1 version"
-      : ["> 1%", "ie 11"]
+      : ["> 1%", "ie 11"],
 };

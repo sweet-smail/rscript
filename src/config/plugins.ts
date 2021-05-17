@@ -75,7 +75,7 @@ if (process.env.NODE_ENV === "development") {
       chunkFilename: configs.hash
         ? `${configs.assetsDir}/css/[name].[contenthash:8].chunk.css`
         : `${configs.assetsDir}/css/[name].chunk.css`
-    })
+    }) as any
   );
 }
 if (configs.analyze) {

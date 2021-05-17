@@ -1,40 +1,33 @@
 {
   "name": "<%=name %>",
   "description": "<%=description %>",
+  "keywords": [],
+  "author": "",
+  "private": true,
   "scripts": {
     "start": "rca start",
     "build": "rca build",
     "test": "rca test",
-    "lint": "eslint"
+    "check": "eslint  src/**",
+    "fix": "prettier --write ."
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": ""
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
-    ],
-    "packages/**/*.{ts,d.ts}": [
-      "npm run build:docs-api",
-      "git adddocs"
-    ]
-  },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
-  "keywords": [],
-  "author": "",
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "dependencies": {
-    "eslint": "^7.15.0",
-    "@typescript-eslint/parser": "^4.9.1",
-    "eslint-plugin-react": "^7.21.5",
-    "@typescript-eslint/eslint-plugin": "^4.9.1",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
@@ -43,9 +36,12 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
-    "@typescript-eslint/parser": "^4.9.1",
-    "eslint-plugin-react": "^7.21.5",
-    "@typescript-eslint/eslint-plugin": "^4.9.1"
+    "eslint": "^7.25.0",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.2.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "husky": "^6.0.0"
   }
 }

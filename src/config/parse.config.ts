@@ -25,10 +25,12 @@ export const configs = getConfigs();
  * @returns webpack.Entry
  */
 export const getEntrys: () => webpack.Entry = () => {
+  console.log(process.cwd())
+
   const webpackHotMidlleClient =
     path.resolve(
-      __dirname,
-      "../../node_modules/webpack-hot-middleware/client.js"
+      process.cwd(),
+      "./node_modules/webpack-hot-middleware/client.js"
     ) + "?path=/__webpack_hmr&timeout=20000&quiet=true&overlayWarnings=true";
   // 如果是多页面配置
   if (!!configs.pages && Object.keys(configs.pages).length > 0) {
@@ -36,7 +38,7 @@ export const getEntrys: () => webpack.Entry = () => {
     for (let pageKey in configs.pages) {
       entryObject[pageKey] = [
         !isProduction && (configs.pages as any)[pageKey].entry,
-        webpackHotMidlleClient
+        webpackHotMidlleClient,
       ].filter(Boolean) as [];
     }
     return entryObject;
@@ -56,7 +58,7 @@ export const getOutput: () => Configuration["output"] = () => {
       publicPath: configs.publicPath,
       filename: `${configs.assetsDir}/js/[name].js`,
       chunkFilename: `${configs.assetsDir}/js/[name].chunk.js`,
-      path: path.resolve(rootSource, configs.outPutDir)
+      path: path.resolve(rootSource, configs.outPutDir),
     };
   }
   return {
@@ -68,14 +70,15 @@ export const getOutput: () => Configuration["output"] = () => {
     chunkFilename: isProduction
       ? `${configs.assetsDir}/js/[name].[chunkhash:8].chunk.js`
       : `${configs.assetsDir}/js/[name].chunk.js`,
-    path: path.resolve(rootSource, configs.outPutDir)
+    path: path.resolve(rootSource, configs.outPutDir),
   };
 };
 
-export const getDevtool: () => Configuration["devtool"] = () => {
-  return configs.devtool || isProduction
-    ? false
-    : "eval-cheap-module-source-map";
+export const getDevtool: () => any = () => {
+  if (configs.devtool) {
+    return configs.devtool;
+  }
+  return isProduction ? false : "eval-cheap-module-source-map";
 };
 
 /**
@@ -85,11 +88,11 @@ export const getDevServer = () => {
   const defaultDevServer = {
     port: 8080, // 默认运行端口
     host: "127.0.0.1",
-    proxy: {}
+    proxy: {},
   };
   return {
     ...defaultDevServer,
-    ...configs.devServer
+    ...configs.devServer,
   };
 };
 /**
@@ -112,7 +115,7 @@ const getAnalyze: () => any = () => {
 };
 export const getCssloaderOptions = () => {
   return {
-    ...configs.cssLoader
+    ...configs.cssLoader,
   };
 };
 /**
@@ -126,29 +129,29 @@ export const getPostLoaderOptions = () => {
           require.resolve("postcss-preset-env"),
           {
             browsers: configs.targets,
-            autoprefixer: { ...configs.autoprefixer }
-          }
+            autoprefixer: { ...configs.autoprefixer },
+          },
         ],
         [require.resolve("postcss-normalize")],
-        ...configs.extraPostCSSPlugins
-      ]
+        ...configs.extraPostCSSPlugins,
+      ],
     },
-    ...configs.postCssLoader
+    ...configs.postCssLoader,
   };
 };
 export const getStyleLoaderOptions = () => {
   return {
-    ...configs.styleLoader
+    ...configs.styleLoader,
   };
 };
 export const getLessLoaderOptions = () => {
   return {
-    ...configs.lessLoader
+    ...configs.lessLoader,
   };
 };
 export const getSassLoaderOptions = () => {
   return {
-    ...configs.sassLoader
+    ...configs.sassLoader,
   };
 };
 /**
@@ -164,21 +167,21 @@ export const getBableOptions = () => {
           useBuiltIns: "usage", //
           modules: false,
           targets: configs.targets,
-          corejs: 3
-        }
+          corejs: 3,
+        },
       ],
       require("@babel/preset-typescript"), // 转换ts代码
       [
         require("@babel/preset-react"),
         {
-          runtime: "automatic"
-        }
+          runtime: "automatic",
+        },
       ],
-      ...configs.extraBabelPresets
+      ...configs.extraBabelPresets,
     ],
     plugins: [
       require.resolve("@babel/plugin-transform-runtime"),
-      ...configs.extraBabelPlugins
-    ]
+      ...configs.extraBabelPlugins,
+    ],
   };
 };
